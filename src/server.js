@@ -14,7 +14,7 @@ try {
 
   app.use(express.json())
 
-  // app.use('/', router)
+  app.use('/', router)
 
   // Error handler.
   app.use(function (err, req, res, next) {
