@@ -21,6 +21,12 @@ try {
   app.use(function (err, req, res, next) {
     err.status = err.status || 500
 
+    if (err.status === 401) {
+      err.message = 'Credentials invalid or not provided.'
+    } else if (err.status === 409) {
+      err.message = 'The username and/or email address is already registered'
+    }
+
     if (req.app.get('env') !== 'development') {
       return res
         .status(err.status)

@@ -35,7 +35,6 @@ export class AccountController {
         })
     } catch (error) {
       const err = createError(401)
-      err.cause = error
       next(err)
     }
   }
@@ -71,7 +70,6 @@ export class AccountController {
         err.cause = error
       } else if (error.name === 'ValidationError') {
         // Validation error(s).
-        console.log(error)
         err = createError(400)
         err.cause = error
       }
