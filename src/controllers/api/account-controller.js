@@ -16,22 +16,17 @@ export class AccountController {
   async login (req, res, next) {
     try {
       const user = await User.authenticate(req.body.username, req.body.password)
-      const token = Buffer.from(process.env.ACCESS_TOKEN_SECRET, 'base64')
 
       const payload = {
         sub: user.username,
-        first_name: user.firstName,
-        last_name: user.lastName,
-        email: user.email,
+        id: user.id,
         x_permission_level: user.permissionLevel
       }
 
-      const accessToken = jwt.sign(payload, token, {
-        algorithm: 'HS256',
+      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+        algorithm: 'RS256',
         expiresIn: process.env.ACCESS_TOKEN_LIFE
       })
-
-      // Refresh token?
 
       res
         .status(201)
@@ -41,7 +36,6 @@ export class AccountController {
     } catch (error) {
       const err = createError(401)
       err.cause = error
-
       next(err)
     }
   }
@@ -56,14 +50,13 @@ export class AccountController {
   async register (req, res, next) {
     try {
       const user = new User({
-        username: req.body.username,
-        password: req.body.password,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
         permissionLevel: 1
       })
-
       await user.save()
 
       res
@@ -78,6 +71,7 @@ export class AccountController {
         err.cause = error
       } else if (error.name === 'ValidationError') {
         // Validation error(s).
+        console.log(error)
         err = createError(400)
         err.cause = error
       }

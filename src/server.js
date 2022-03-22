@@ -2,6 +2,7 @@ import express from 'express'
 import helmet from 'helmet'
 import logger from 'morgan'
 import { connectDB } from './config/mongoose.js'
+import { router } from './routes/router.js'
 
 try {
   await connectDB()
